@@ -1,20 +1,35 @@
 // 수강신청 데이터를 Firestore에 저장하는 함수
-async function saveRegistration(formData) {
+async function saveRegistration(data) {
     try {
-        const data = {
-            courseName: formData.get('selectedCourse'),
-            name: formData.get('name'),
-            phone: formData.get('phone'),
-            email: formData.get('email'),
-            purpose: formData.get('purpose'),
-            region: formData.get('region'),
-            registrationDate: firebase.firestore.FieldValue.serverTimestamp()
+        const registrationData = {
+            courseName: data.courseName,
+            name: data.name,
+            phone: data.phone,
+            age: data.age,
+            address: data.address,
+            gender: data.gender,
+            email: data.email,
+            payment_status: data.payment_status,
+            privacy_agreed: data.privacy_agreed,
+            registrationDate: firebase.firestore.FieldValue.serverTimestamp(),
+            lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
         };
 
         // Firestore에 데이터 저장
-        const docRef = await db.collection('registrations').add(data);
+        const docRef = await db.collection('registrations').add(registrationData);
         console.log('Registration saved with ID:', docRef.id);
-        return { success: true, data };
+        
+        // 저장된 데이터 조회
+        const savedDoc = await docRef.get();
+        const savedData = savedDoc.data();
+        
+        return { 
+            success: true, 
+            data: {
+                id: docRef.id,
+                ...savedData
+            }
+        };
     } catch (error) {
         console.error('Error saving registration:', error);
         throw error;
@@ -41,7 +56,7 @@ async function getAllRegistrations() {
 // 특정 과목의 수강신청 목록을 가져오는 함수
 async function getRegistrationsByCourse(courseName) {
     try {
-        // 먼저 courseName으로만 필터링
+        // 먼저 courseName으로 필터링
         const snapshot = await db.collection('registrations')
             .where('courseName', '==', courseName)
             .get();
@@ -54,8 +69,9 @@ async function getRegistrationsByCourse(courseName) {
 
         // 날짜 기준으로 정렬
         return registrations.sort((a, b) => {
-            const dateA = a.registrationDate ? a.registrationDate.seconds : 0;
-            const dateB = b.registrationDate ? b.registrationDate.seconds : 0;
+            if (!a.registrationDate || !b.registrationDate) return 0;
+            const dateA = a.registrationDate.seconds || 0;
+            const dateB = b.registrationDate.seconds || 0;
             return dateB - dateA; // 내림차순 정렬
         });
     } catch (error) {

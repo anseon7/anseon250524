@@ -456,20 +456,23 @@
             }
 
             .registration-table td {
-                padding: 0.5rem 0;
-                border: none;
-                text-align: left;
-                position: relative;
-                padding-left: 40%;
+                padding-left: 45%;
+                min-height: 2.5rem;
+                display: flex;
+                align-items: center;
             }
 
             .registration-table td:before {
-                content: attr(data-label);
-                position: absolute;
-                left: 0;
-                width: 35%;
-                font-weight: bold;
-                color: #666;
+                width: 40%;
+                left: 0.5rem;
+            }
+
+            .registration-table tr {
+                padding: 1rem 0.5rem;
+                margin-bottom: 1rem;
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
             }
 
             .course-tabs {
@@ -493,8 +496,13 @@
             }
 
             .registration-table td {
-                font-size: 0.9rem;
-                padding-left: 45%;
+                font-size: 0.85rem;
+                padding-left: 50%;
+            }
+
+            .registration-table td:before {
+                width: 45%;
+                font-size: 0.85rem;
             }
         }
 
@@ -531,6 +539,197 @@
                 width: 100%;
                 justify-content: flex-end;
             }
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"] {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="email"]:focus {
+            border-color: #00ff88;
+            box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1);
+            outline: none;
+        }
+
+        .radio-button {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .radio-button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 255, 136, 0.1);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .radio-button:has(input:checked) {
+            border-color: #00ff88 !important;
+            background-color: rgba(0, 255, 136, 0.1) !important;
+            font-weight: 600;
+        }
+
+        .radio-button:has(input:checked):before {
+            opacity: 1;
+        }
+
+        .radio-button:hover {
+            border-color: #00ff88;
+            transform: translateY(-1px);
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus {
+            outline: none;
+            border-color: #00ff88 !important;
+            box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.1);
+        }
+
+        button[type="submit"]:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 255, 136, 0.2);
+        }
+
+        /* 체크박스와 삭제 버튼 스타일 */
+        .delete-btn {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: #ff0000;
+            transform: translateY(-2px);
+        }
+
+        .delete-btn i {
+            font-size: 1rem;
+        }
+
+        .registration-checkbox, #selectAll {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #00ff88;
+        }
+
+        @media (max-width: 768px) {
+            .registration-table td[data-label="선택"] {
+                padding-left: 1rem;
+                justify-content: center;
+            }
+        }
+
+        /* 결과 모달 스타일 */
+        .result-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .result-modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .result-title {
+            color: #00ff88;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .result-info {
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .result-info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .result-info-label {
+            font-weight: bold;
+            color: #666;
+        }
+
+        .result-info-value {
+            color: #333;
+        }
+
+        .result-message {
+            text-align: center;
+            color: #666;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .close-result-btn {
+            background: linear-gradient(45deg, #00ff88, #00ffee);
+            color: #1a1a1a;
+            border: none;
+            padding: 1rem;
+            border-radius: 8px;
+            width: 100%;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .close-result-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
         }
     </style>
     <!-- Font Awesome CDN 추가 -->
@@ -577,40 +776,82 @@
         <div class="modal-content">
             <span class="close-btn">&times;</span>
             <h2 style="margin-bottom: 1.5rem; color: #00ff88;">수강신청 폼</h2>
-            <form id="registrationForm">
+            <form id="registrationForm" style="max-width: 500px; margin: 0 auto;">
                 <input type="hidden" id="selectedCourse" name="selectedCourse">
-                <div class="form-group">
-                    <label for="name">이름</label>
-                    <input type="text" id="name" name="name" required>
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label for="name" style="display: block; margin-bottom: 4px; color: #333; font-size: 0.9rem;">이름</label>
+                    <input type="text" id="name" name="name" placeholder="이름을 입력해주세요" required 
+                        style="width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9rem;">
                 </div>
-                <div class="form-group">
-                    <label for="phone">전화번호</label>
-                    <input type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}" placeholder="010-0000-0000" required>
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label for="phone" style="display: block; margin-bottom: 4px; color: #333; font-size: 0.9rem;">연락처</label>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <input type="text" id="phone1" name="phone1" maxlength="3" placeholder="010" required 
+                            style="width: 30%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9rem; text-align: center;">
+                        <span style="color: #666;">-</span>
+                        <input type="text" id="phone2" name="phone2" maxlength="4" placeholder="0000" required 
+                            style="width: 30%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9rem; text-align: center;">
+                        <span style="color: #666;">-</span>
+                        <input type="text" id="phone3" name="phone3" maxlength="4" placeholder="0000" required 
+                            style="width: 30%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9rem; text-align: center;">
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="email">이메일</label>
-                    <input type="email" id="email" name="email" required>
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label for="age" style="display: block; margin-bottom: 4px; color: #333; font-size: 0.9rem;">연령</label>
+                    <input type="text" id="age" name="age" placeholder="예: 20대" required 
+                        style="width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9rem;">
                 </div>
-                <div class="form-group">
-                    <label for="purpose">수강목적</label>
-                    <textarea id="purpose" name="purpose" required></textarea>
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label for="address" style="display: block; margin-bottom: 4px; color: #333; font-size: 0.9rem;">거주지역</label>
+                    <input type="text" id="address" name="address" placeholder="예: 서울시 강남구 역삼동" required 
+                        style="width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9rem;">
                 </div>
-                <div class="form-group">
-                    <label for="region">지역</label>
-                    <select id="region" name="region" required>
-                        <option value="">지역을 선택하세요</option>
-                        <option value="서울">서울</option>
-                        <option value="세종">세종</option>
-                        <option value="경기">경기</option>
-                        <option value="인천">인천</option>
-                        <option value="강원">강원</option>
-                        <option value="충청">충청</option>
-                        <option value="전라">전라</option>
-                        <option value="경상">경상</option>
-                        <option value="제주">제주</option>
-                    </select>
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label style="display: block; margin-bottom: 4px; color: #333; font-size: 0.9rem;">성별</label>
+                    <div style="display: flex; gap: 8px;">
+                        <label class="radio-button" style="flex: 1; padding: 6px; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; text-align: center; transition: all 0.2s ease;">
+                            <input type="radio" name="gender" value="male" required style="display: none;">
+                            <span style="font-size: 0.9rem;">👨 남성</span>
+                        </label>
+                        <label class="radio-button" style="flex: 1; padding: 6px; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; text-align: center; transition: all 0.2s ease;">
+                            <input type="radio" name="gender" value="female" required style="display: none;">
+                            <span style="font-size: 0.9rem;">👩 여성</span>
+                        </label>
+                    </div>
                 </div>
-                <button type="submit" class="submit-btn">신청하기</button>
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label for="email" style="display: block; margin-bottom: 4px; color: #333; font-size: 0.9rem;">이메일</label>
+                    <input type="email" id="email" name="email" placeholder="example@email.com" required 
+                        style="width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9rem;">
+                </div>
+                <div class="form-group" style="margin: 12px 0; padding: 12px; background: #f8f9fa; border-radius: 6px;">
+                    <label style="display: block; margin-bottom: 8px; color: #333; font-size: 0.9rem; font-weight: 600;">입금 정보</label>
+                    <div style="background: white; padding: 8px; border-radius: 6px; border: 1px solid #eee; margin-bottom: 8px;">
+                        <p style="margin: 0; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            메리츠증권 | 301-860-2001 | 예금주: 장*선
+                        </p>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <label class="radio-button" style="flex: 1; padding: 6px; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; text-align: center; transition: all 0.2s ease; background: white;">
+                            <input type="radio" name="payment_status" value="completed" required style="display: none;">
+                            <span style="font-size: 0.9rem;">✅ 입금 완료</span>
+                        </label>
+                        <label class="radio-button" style="flex: 1; padding: 6px; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; text-align: center; transition: all 0.2s ease; background: white;">
+                            <input type="radio" name="payment_status" value="pending" required style="display: none;">
+                            <span style="font-size: 0.9rem;">⏳ 입금 예정</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 12px; padding: 8px; background: #f8f9fa; border-radius: 6px;">
+                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                        <input type="checkbox" id="privacy" name="privacy" required 
+                            style="width: 14px; height: 14px; border-radius: 3px; accent-color: #00ff88;">
+                        <span style="font-size: 0.85rem; color: #444;">개인정보 수집 및 이용에 동의합니다.</span>
+                    </label>
+                </div>
+                <button type="submit" style="width: 100%; padding: 10px; background: linear-gradient(45deg, #00ff88, #00ffee); 
+                    border: none; border-radius: 6px; color: #1a1a1a; font-weight: 600; font-size: 0.9rem; 
+                    cursor: pointer; transition: all 0.2s ease;">신청하기</button>
             </form>
         </div>
     </div>
@@ -645,18 +886,43 @@
             <table class="registration-table">
                 <thead>
                     <tr>
+                        <th>
+                            <input type="checkbox" id="selectAll" title="전체 선택">
+                        </th>
                         <th>등록일</th>
                         <th>과목</th>
                         <th>이름</th>
-                        <th>전화번호</th>
+                        <th>연락처</th>
+                        <th>연령</th>
+                        <th>거주지역</th>
+                        <th>성별</th>
                         <th>이메일</th>
-                        <th>지역</th>
-                        <th>수강목적</th>
+                        <th>입금상태</th>
                     </tr>
                 </thead>
                 <tbody id="registrationTableBody">
                 </tbody>
             </table>
+            <div class="table-actions" style="margin-top: 1rem; text-align: right;">
+                <button id="deleteSelected" class="delete-btn" style="display: none;">
+                    <i class="fas fa-trash"></i> 선택항목 삭제
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 결과 모달 -->
+    <div class="result-modal" id="resultModal">
+        <div class="result-modal-content">
+            <h2 class="result-title">수강신청 완료</h2>
+            <div class="result-info" id="resultInfo">
+                <!-- 동적으로 채워질 내용 -->
+            </div>
+            <div class="result-message">
+                입력하신 정보로 수강신청이 등록되었습니다.<br>
+                추가 안내는 입력하신 연락처로 전달됩니다.
+            </div>
+            <button class="close-result-btn" onclick="closeResultModal()">확인</button>
         </div>
     </div>
 
@@ -688,29 +954,89 @@
             }
         });
 
+        // 결과 모달 관련 함수
+        const resultModal = document.getElementById('resultModal');
+        
+        function showResultModal(data) {
+            const resultInfo = document.getElementById('resultInfo');
+            const items = [
+                { label: '신청과목', value: data.courseName },
+                { label: '이름', value: data.name },
+                { label: '연락처', value: data.phone },
+                { label: '연령', value: data.age },
+                { label: '거주지역', value: data.address },
+                { label: '성별', value: data.gender === 'male' ? '남성' : '여성' },
+                { label: '이메일', value: data.email },
+                { label: '입금상태', value: data.payment_status === 'completed' ? '입금완료' : '입금예정' }
+            ];
+
+            resultInfo.innerHTML = items.map(item => `
+                <div class="result-info-item">
+                    <span class="result-info-label">${item.label}</span>
+                    <span class="result-info-value">${item.value}</span>
+                </div>
+            `).join('');
+
+            resultModal.style.display = 'flex';
+        }
+
+        function closeResultModal() {
+            resultModal.style.display = 'none';
+        }
+
         // 폼 제출 처리
         registrationForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
+            // 필수 체크 항목 확인
+            if (!document.getElementById('privacy').checked) {
+                alert('개인정보 수집 및 이용에 동의해주세요.');
+                return;
+            }
+
+            // 성별 선택 확인
+            const genderSelected = document.querySelector('input[name="gender"]:checked');
+            if (!genderSelected) {
+                alert('성별을 선택해주세요.');
+                return;
+            }
+
+            // 입금 상태 선택 확인
+            const paymentSelected = document.querySelector('input[name="payment_status"]:checked');
+            if (!paymentSelected) {
+                alert('입금 상태를 선택해주세요.');
+                return;
+            }
+
             // 로딩 표시
-            const submitBtn = this.querySelector('.submit-btn');
+            const submitBtn = this.querySelector('button[type="submit"]');
             const originalBtnText = submitBtn.textContent;
             submitBtn.textContent = '처리중...';
             submitBtn.disabled = true;
 
             try {
                 const formData = new FormData(this);
-                const result = await saveRegistration(formData);
+                const phone = `${formData.get('phone1')}-${formData.get('phone2')}-${formData.get('phone3')}`;
+                
+                const data = {
+                    courseName: formData.get('selectedCourse'),
+                    name: formData.get('name'),
+                    phone: phone,
+                    age: formData.get('age'),
+                    address: formData.get('address'),
+                    gender: formData.get('gender'),
+                    email: formData.get('email'),
+                    payment_status: formData.get('payment_status'),
+                    privacy_agreed: true,
+                    registrationDate: new Date().toISOString()
+                };
+
+                const result = await saveRegistration(data);
 
                 if (result.success) {
-                    alert(`${result.data.courseName} 과목 수강신청이 완료되었습니다!\n\n` +
-                          `이름: ${result.data.name}\n` +
-                          `전화번호: ${result.data.phone}\n` +
-                          `이메일: ${result.data.email}\n` +
-                          `지역: ${result.data.region}`);
-                    
                     modal.style.display = 'none';
                     this.reset();
+                    showResultModal(result.data);
                 }
             } catch (error) {
                 console.error('Error:', error);
@@ -719,6 +1045,24 @@
                 submitBtn.textContent = originalBtnText;
                 submitBtn.disabled = false;
             }
+        });
+
+        // 라디오 버튼 클릭 효과
+        document.querySelectorAll('.radio-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const input = this.querySelector('input[type="radio"]');
+                const name = input.name;
+                
+                // 같은 그룹의 다른 버튼들의 선택 상태 해제
+                document.querySelectorAll(`input[name="${name}"]`).forEach(radio => {
+                    radio.closest('.radio-button').classList.remove('selected');
+                });
+                
+                // 현재 버튼 선택 상태 표시
+                if (input.checked) {
+                    this.classList.add('selected');
+                }
+            });
         });
 
         // 관리자 관련 스크립트
@@ -747,13 +1091,74 @@
             document.getElementById('adminPassword').value = '';
         }
 
+        // 체크박스 관련 변수
+        const selectAllCheckbox = document.getElementById('selectAll');
+        const deleteSelectedBtn = document.getElementById('deleteSelected');
+
+        // 전체 선택 체크박스 이벤트
+        selectAllCheckbox.addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('.registration-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+            updateDeleteButtonVisibility();
+        });
+
+        // 개별 체크박스 변경 감지를 위한 이벤트 위임
+        document.addEventListener('change', function(e) {
+            if (e.target.classList.contains('registration-checkbox')) {
+                updateDeleteButtonVisibility();
+                updateSelectAllCheckbox();
+            }
+        });
+
+        // 삭제 버튼 클릭 이벤트
+        deleteSelectedBtn.addEventListener('click', async function() {
+            if (!confirm('선택한 항목을 삭제하시겠습니까?')) return;
+
+            const selectedCheckboxes = document.querySelectorAll('.registration-checkbox:checked');
+            const selectedIds = Array.from(selectedCheckboxes).map(cb => cb.dataset.id);
+
+            try {
+                // 선택된 항목 삭제
+                await Promise.all(selectedIds.map(id => deleteRegistration(id)));
+                
+                // 현재 활성화된 탭의 데이터 다시 로드
+                const activeTab = document.querySelector('.course-tab.active');
+                const courseName = activeTab.textContent === '전체' ? 'all' : activeTab.textContent;
+                await showCourseData(courseName);
+                
+                alert('선택한 항목이 삭제되었습니다.');
+            } catch (error) {
+                console.error('Error deleting registrations:', error);
+                alert('삭제 중 오류가 발생했습니다.');
+            }
+        });
+
+        // 삭제 버튼 표시 여부 업데이트
+        function updateDeleteButtonVisibility() {
+            const checkedCount = document.querySelectorAll('.registration-checkbox:checked').length;
+            deleteSelectedBtn.style.display = checkedCount > 0 ? 'inline-flex' : 'none';
+        }
+
+        // 전체 선택 체크박스 상태 업데이트
+        function updateSelectAllCheckbox() {
+            const checkboxes = document.querySelectorAll('.registration-checkbox');
+            const checkedBoxes = document.querySelectorAll('.registration-checkbox:checked');
+            selectAllCheckbox.checked = checkboxes.length > 0 && checkboxes.length === checkedBoxes.length;
+        }
+
+        // showCourseData 함수 수정
         async function showCourseData(course) {
             try {
                 // 로딩 상태 표시
                 registrationTableBody.innerHTML = `
                     <tr>
-                        <td colspan="7" style="text-align: center; padding: 2rem;">
-                            데이터를 불러오는 중...
+                        <td colspan="10" style="text-align: center; padding: 2rem;">
+                            <div style="display: flex; justify-content: center; align-items: center; gap: 1rem;">
+                                <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem; color: #00ff88;"></i>
+                                데이터를 불러오는 중...
+                            </div>
                         </td>
                     </tr>
                 `;
@@ -768,27 +1173,25 @@
 
                 // 데이터 가져오기
                 let registrations = [];
-                try {
-                    if (course === 'all') {
-                        registrations = await getAllRegistrations();
-                    } else {
-                        registrations = await getRegistrationsByCourse(course);
-                    }
-                } catch (error) {
-                    console.error('데이터 조회 오류:', error);
-                    throw new Error('데이터 조회 중 오류가 발생했습니다.');
+                
+                if (course === 'all') {
+                    registrations = await getAllRegistrations();
+                } else {
+                    registrations = await getRegistrationsByCourse(course);
                 }
 
-                // 결과가 없을 경우 메시지 표시
+                // 결과가 없을 경우
                 if (!registrations || registrations.length === 0) {
                     registrationTableBody.innerHTML = `
                         <tr>
-                            <td colspan="7" style="text-align: center; padding: 2rem;">
-                                ${course === 'all' ? '등록된 수강신청이 없습니다.' : `${course} 과정에 등록된 수강신청이 없습니다.`}
+                            <td colspan="10" style="text-align: center; padding: 2rem;">
+                                <div style="color: #666;">
+                                    <i class="fas fa-info-circle" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                                    <p>${course === 'all' ? '등록된 수강신청이 없습니다.' : `${course} 과정에 등록된 수강신청이 없습니다.`}</p>
+                                </div>
                             </td>
                         </tr>
                     `;
-                    // 제목 업데이트
                     const courseTitle = document.querySelector('.admin-title');
                     courseTitle.textContent = `관리자 대시보드 (${course === 'all' ? '전체' : course}) - 0건`;
                     return;
@@ -798,25 +1201,35 @@
                 registrationTableBody.innerHTML = registrations.map(reg => {
                     let dateStr = '-';
                     if (reg.registrationDate) {
-                        const date = new Date(reg.registrationDate.seconds * 1000);
-                        dateStr = date.toLocaleString('ko-KR', {
-                            year: 'numeric',
-                            month: '2-digit',
-                            day: '2-digit',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        });
+                        try {
+                            const date = new Date(reg.registrationDate.seconds * 1000);
+                            dateStr = date.toLocaleString('ko-KR', {
+                                year: 'numeric',
+                                month: '2-digit',
+                                day: '2-digit',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            });
+                        } catch (error) {
+                            console.error('Date parsing error:', error);
+                            dateStr = '-';
+                        }
                     }
 
                     return `
                         <tr>
+                            <td data-label="선택">
+                                <input type="checkbox" class="registration-checkbox" data-id="${reg.id}">
+                            </td>
                             <td data-label="등록일">${dateStr}</td>
                             <td data-label="과목">${reg.courseName || '-'}</td>
                             <td data-label="이름">${reg.name || '-'}</td>
-                            <td data-label="전화번호">${reg.phone || '-'}</td>
+                            <td data-label="연락처">${reg.phone || '-'}</td>
+                            <td data-label="연령">${reg.age || '-'}</td>
+                            <td data-label="거주지역">${reg.address || '-'}</td>
+                            <td data-label="성별">${reg.gender === 'male' ? '남성' : '여성'}</td>
                             <td data-label="이메일">${reg.email || '-'}</td>
-                            <td data-label="지역">${reg.region || '-'}</td>
-                            <td data-label="수강목적">${reg.purpose || '-'}</td>
+                            <td data-label="입금상태">${reg.payment_status === 'completed' ? '입금완료' : '입금예정'}</td>
                         </tr>
                     `;
                 }).join('');
@@ -825,16 +1238,27 @@
                 const courseTitle = document.querySelector('.admin-title');
                 courseTitle.textContent = `관리자 대시보드 (${course === 'all' ? '전체' : course}) - ${registrations.length}건`;
 
+                // 체크박스 상태 초기화
+                selectAllCheckbox.checked = false;
+                updateDeleteButtonVisibility();
+
             } catch (error) {
                 console.error('Error:', error);
                 registrationTableBody.innerHTML = `
                     <tr>
-                        <td colspan="7" style="text-align: center; padding: 2rem; color: red;">
-                            ${error.message || '데이터를 불러오는 중 오류가 발생했습니다.'}
+                        <td colspan="10" style="text-align: center; padding: 2rem;">
+                            <div style="color: #ff4444; text-align: center;">
+                                <i class="fas fa-exclamation-circle" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                                <p>데이터를 불러오는 중 오류가 발생했습니다.</p>
+                                <button onclick="showCourseData('${course}')" 
+                                    style="margin-top: 1rem; padding: 0.5rem 1rem; background: #00ff88; 
+                                    border: none; border-radius: 4px; cursor: pointer;">
+                                    <i class="fas fa-redo"></i> 다시 시도
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 `;
-                // 제목 초기화
                 const courseTitle = document.querySelector('.admin-title');
                 courseTitle.textContent = '관리자 대시보드';
             }

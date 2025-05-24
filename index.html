@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 수강신청</title>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <!-- Firebase 설정 및 기능 스크립트 -->
+    <script src="firebase-config.js"></script>
+    <script src="firebase-operations.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            color: white;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            padding: 3rem 0;
+            position: relative;
+        }
+
+        .admin-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: transparent;
+            border: 2px solid #00ff88;
+            color: #00ff88;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .admin-btn:hover {
+            background: #00ff88;
+            color: #1a1a1a;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #00ff88, #00ffee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 400px;
+            background: url('https://images.unsplash.com/photo-1581472723648-909f4851d4ae?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') center/cover;
+            border-radius: 20px;
+            margin: 2rem 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .courses {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .course-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+
+        .course-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .course-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .course-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #00ff88;
+        }
+
+        .course-description {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .register-btn {
+            background: linear-gradient(45deg, #00ff88, #00ffee);
+            color: #1a1a1a;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .register-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* 모달 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            color: #333;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background: linear-gradient(45deg, #00ff88, #00ffee);
+            color: #1a1a1a;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .courses {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* 관리자 모달 스타일 */
+        .admin-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .admin-modal-content {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            color: #333;
+        }
+
+        .admin-dashboard {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            z-index: 2000;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #eee;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .admin-title {
+            color: #333;
+            font-size: 1.8rem;
+        }
+
+        .close-admin-btn {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .course-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .course-tab {
+            padding: 0.8rem 1.5rem;
+            background: #eee;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .course-tab.active {
+            background: #00ff88;
+            color: #1a1a1a;
+        }
+
+        .registration-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 1rem;
+        }
+
+        .registration-table th,
+        .registration-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            color: #333;
+        }
+
+        .registration-table th {
+            background: #f5f5f5;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .registration-table tr:hover {
+            background: #f9f9f9;
+        }
+
+        .admin-password-input {
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .admin-submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: #00ff88;
+            color: #1a1a1a;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* 관리자 대시보드 반응형 스타일 */
+        @media (max-width: 1024px) {
+            .admin-dashboard {
+                padding: 1rem;
+            }
+
+            .course-tabs {
+                gap: 0.5rem;
+            }
+
+            .course-tab {
+                padding: 0.6rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .registration-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .close-admin-btn {
+                align-self: flex-end;
+            }
+
+            .registration-table {
+                display: block;
+            }
+
+            .registration-table thead {
+                display: none;
+            }
+
+            .registration-table tbody,
+            .registration-table tr,
+            .registration-table td {
+                display: block;
+                width: 100%;
+            }
+
+            .registration-table tr {
+                margin-bottom: 1rem;
+                border: 1px solid #eee;
+                border-radius: 8px;
+                padding: 1rem;
+                background: #f9f9f9;
+            }
+
+            .registration-table td {
+                padding: 0.5rem 0;
+                border: none;
+                text-align: left;
+                position: relative;
+                padding-left: 40%;
+            }
+
+            .registration-table td:before {
+                content: attr(data-label);
+                position: absolute;
+                left: 0;
+                width: 35%;
+                font-weight: bold;
+                color: #666;
+            }
+
+            .course-tabs {
+                justify-content: center;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .admin-dashboard {
+                padding: 0.5rem;
+            }
+
+            .admin-title {
+                font-size: 1.2rem;
+            }
+
+            .course-tab {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.8rem;
+            }
+
+            .registration-table td {
+                font-size: 0.9rem;
+                padding-left: 45%;
+            }
+        }
+
+        /* 홈 버튼 스타일 */
+        .admin-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .home-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .home-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .home-btn i {
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .admin-buttons {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+    </style>
+    <!-- Font Awesome CDN 추가 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <button class="admin-btn">관리자</button>
+            <h1>2025 수강신청</h1>
+            <p>미래를 선도하는 최신 기술 교육 과정</p>
+        </header>
+
+        <div class="hero-image"></div>
+
+        <div class="courses">
+            <div class="course-card">
+                <div class="course-icon">🎨</div>
+                <h2 class="course-title">Figma</h2>
+                <p class="course-description">현대적인 UI/UX 디자인을 위한 필수 도구 Figma를 마스터하세요. 실무에서 바로 적용 가능한 디자인 스킬을 배웁니다.</p>
+                <button class="register-btn">수강신청</button>
+            </div>
+
+            <div class="course-card">
+                <div class="course-icon">🤖</div>
+                <h2 class="course-title">AI 시스템</h2>
+                <p class="course-description">인공지능의 기초부터 고급 응용까지, 미래 산업의 핵심 기술을 깊이 있게 학습합니다.</p>
+                <button class="register-btn">수강신청</button>
+            </div>
+
+            <div class="course-card">
+                <div class="course-icon">💻</div>
+                <h2 class="course-title">Front-end</h2>
+                <p class="course-description">최신 웹 기술과 프레임워크를 활용한 현대적인 프론트엔드 개발을 배웁니다.</p>
+                <button class="register-btn">수강신청</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 수강신청 모달 -->
+    <div class="modal" id="registrationModal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2 style="margin-bottom: 1.5rem; color: #00ff88;">수강신청 폼</h2>
+            <form id="registrationForm">
+                <input type="hidden" id="selectedCourse" name="selectedCourse">
+                <div class="form-group">
+                    <label for="name">이름</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">전화번호</label>
+                    <input type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}" placeholder="010-0000-0000" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">이메일</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="purpose">수강목적</label>
+                    <textarea id="purpose" name="purpose" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="region">지역</label>
+                    <select id="region" name="region" required>
+                        <option value="">지역을 선택하세요</option>
+                        <option value="서울">서울</option>
+                        <option value="경기">경기</option>
+                        <option value="인천">인천</option>
+                        <option value="강원">강원</option>
+                        <option value="충청">충청</option>
+                        <option value="전라">전라</option>
+                        <option value="경상">경상</option>
+                        <option value="제주">제주</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn">신청하기</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 관리자 로그인 모달 -->
+    <div class="admin-modal" id="adminModal">
+        <div class="admin-modal-content">
+            <h2 style="margin-bottom: 1.5rem; color: #333;">관리자 로그인</h2>
+            <input type="password" class="admin-password-input" id="adminPassword" placeholder="관리자 비밀번호를 입력하세요">
+            <button class="admin-submit-btn" onclick="checkAdminPassword()">로그인</button>
+        </div>
+    </div>
+
+    <!-- 관리자 대시보드 -->
+    <div class="admin-dashboard" id="adminDashboard">
+        <div class="admin-header">
+            <h2 class="admin-title">관리자 대시보드</h2>
+            <div class="admin-buttons">
+                <button class="home-btn" onclick="goToHome()" title="새 탭에서 홈페이지 열기">
+                    <i class="fas fa-home"></i> 홈으로
+                </button>
+                <button class="close-admin-btn" onclick="closeAdminDashboard()">닫기</button>
+            </div>
+        </div>
+        <div class="course-tabs">
+            <button class="course-tab active" onclick="showCourseData('all')">전체</button>
+            <button class="course-tab" onclick="showCourseData('Figma')">Figma</button>
+            <button class="course-tab" onclick="showCourseData('AI 시스템')">AI 시스템</button>
+            <button class="course-tab" onclick="showCourseData('Front-end')">Front-end</button>
+        </div>
+        <div class="registration-list">
+            <table class="registration-table">
+                <thead>
+                    <tr>
+                        <th>등록일</th>
+                        <th>과목</th>
+                        <th>이름</th>
+                        <th>전화번호</th>
+                        <th>이메일</th>
+                        <th>지역</th>
+                        <th>수강목적</th>
+                    </tr>
+                </thead>
+                <tbody id="registrationTableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // 모달 관련 요소들
+        const modal = document.getElementById('registrationModal');
+        const closeBtn = document.querySelector('.close-btn');
+        const registrationForm = document.getElementById('registrationForm');
+        const selectedCourseInput = document.getElementById('selectedCourse');
+
+        // 수강신청 버튼 클릭 이벤트
+        document.querySelectorAll('.register-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const courseName = this.parentElement.querySelector('.course-title').textContent;
+                selectedCourseInput.value = courseName;
+                modal.style.display = 'flex';
+            });
+        });
+
+        // 모달 닫기
+        closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        // 모달 외부 클릭시 닫기
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // 폼 제출 처리
+        registrationForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // 로딩 표시
+            const submitBtn = this.querySelector('.submit-btn');
+            const originalBtnText = submitBtn.textContent;
+            submitBtn.textContent = '처리중...';
+            submitBtn.disabled = true;
+
+            try {
+                const formData = new FormData(this);
+                const result = await saveRegistration(formData);
+
+                if (result.success) {
+                    alert(`${result.data.courseName} 과목 수강신청이 완료되었습니다!\n\n` +
+                          `이름: ${result.data.name}\n` +
+                          `전화번호: ${result.data.phone}\n` +
+                          `이메일: ${result.data.email}\n` +
+                          `지역: ${result.data.region}`);
+                    
+                    modal.style.display = 'none';
+                    this.reset();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('수강신청 중 오류가 발생했습니다. 다시 시도해주세요.');
+            } finally {
+                submitBtn.textContent = originalBtnText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        // 관리자 관련 스크립트
+        const adminBtn = document.querySelector('.admin-btn');
+        const adminModal = document.getElementById('adminModal');
+        const adminDashboard = document.getElementById('adminDashboard');
+        const registrationTableBody = document.getElementById('registrationTableBody');
+
+        adminBtn.addEventListener('click', () => {
+            adminModal.style.display = 'flex';
+        });
+
+        function checkAdminPassword() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === '508116') {
+                adminModal.style.display = 'none';
+                adminDashboard.style.display = 'block';
+                showCourseData('all');
+            } else {
+                alert('잘못된 비밀번호입니다.');
+            }
+        }
+
+        function closeAdminDashboard() {
+            adminDashboard.style.display = 'none';
+            document.getElementById('adminPassword').value = '';
+        }
+
+        async function showCourseData(course) {
+            try {
+                // 로딩 상태 표시
+                registrationTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 2rem;">
+                            데이터를 불러오는 중...
+                        </td>
+                    </tr>
+                `;
+
+                // 탭 활성화 상태 변경
+                document.querySelectorAll('.course-tab').forEach(tab => {
+                    tab.classList.remove('active');
+                    if (tab.textContent === course || (course === 'all' && tab.textContent === '전체')) {
+                        tab.classList.add('active');
+                    }
+                });
+
+                // 데이터 가져오기
+                let registrations = [];
+                try {
+                    if (course === 'all') {
+                        registrations = await getAllRegistrations();
+                    } else {
+                        registrations = await getRegistrationsByCourse(course);
+                    }
+                } catch (error) {
+                    console.error('데이터 조회 오류:', error);
+                    throw new Error('데이터 조회 중 오류가 발생했습니다.');
+                }
+
+                // 결과가 없을 경우 메시지 표시
+                if (!registrations || registrations.length === 0) {
+                    registrationTableBody.innerHTML = `
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 2rem;">
+                                ${course === 'all' ? '등록된 수강신청이 없습니다.' : `${course} 과정에 등록된 수강신청이 없습니다.`}
+                            </td>
+                        </tr>
+                    `;
+                    // 제목 업데이트
+                    const courseTitle = document.querySelector('.admin-title');
+                    courseTitle.textContent = `관리자 대시보드 (${course === 'all' ? '전체' : course}) - 0건`;
+                    return;
+                }
+
+                // 테이블 데이터 업데이트
+                registrationTableBody.innerHTML = registrations.map(reg => {
+                    let dateStr = '-';
+                    if (reg.registrationDate) {
+                        const date = new Date(reg.registrationDate.seconds * 1000);
+                        dateStr = date.toLocaleString('ko-KR', {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                    }
+
+                    return `
+                        <tr>
+                            <td data-label="등록일">${dateStr}</td>
+                            <td data-label="과목">${reg.courseName || '-'}</td>
+                            <td data-label="이름">${reg.name || '-'}</td>
+                            <td data-label="전화번호">${reg.phone || '-'}</td>
+                            <td data-label="이메일">${reg.email || '-'}</td>
+                            <td data-label="지역">${reg.region || '-'}</td>
+                            <td data-label="수강목적">${reg.purpose || '-'}</td>
+                        </tr>
+                    `;
+                }).join('');
+
+                // 제목 업데이트
+                const courseTitle = document.querySelector('.admin-title');
+                courseTitle.textContent = `관리자 대시보드 (${course === 'all' ? '전체' : course}) - ${registrations.length}건`;
+
+            } catch (error) {
+                console.error('Error:', error);
+                registrationTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 2rem; color: red;">
+                            ${error.message || '데이터를 불러오는 중 오류가 발생했습니다.'}
+                        </td>
+                    </tr>
+                `;
+                // 제목 초기화
+                const courseTitle = document.querySelector('.admin-title');
+                courseTitle.textContent = '관리자 대시보드';
+            }
+        }
+
+        // 모달 외부 클릭시 닫기
+        window.addEventListener('click', (e) => {
+            if (e.target === adminModal) {
+                adminModal.style.display = 'none';
+            }
+        });
+
+        // 홈으로 가기 함수 수정
+        function goToHome() {
+            window.open('index.html', '_blank');
+        }
+    </script>
+</body>
+</html> 
